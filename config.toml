@@ -1,2 +1,2 @@
 [server]
-maxUploadSize = 2000  # Set to desired size in MB
+maxUploadSize = 1024
