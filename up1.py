@@ -2,10 +2,10 @@ import streamlit as st
 import pandas as pd
 
 # Streamlit app title
-st.title("Merge Multiple Excel Files")
+st.title("Merge Multiple Excel and CSV Files")
 
-# File uploader to upload multiple Excel files
-uploaded_files = st.file_uploader("Upload Excel files", type=["xlsx"], accept_multiple_files=True)
+# File uploader to upload multiple Excel or CSV files
+uploaded_files = st.file_uploader("Upload Excel or CSV files", type=["xlsx", "csv"], accept_multiple_files=True)
 
 if uploaded_files:
     # Initialize an empty list to hold DataFrames
@@ -13,7 +13,11 @@ if uploaded_files:
 
     # Loop through uploaded files and read them into DataFrames
     for file in uploaded_files:
-        df = pd.read_excel(file)
+        # Check the file type and read accordingly
+        if file.name.endswith('.xlsx'):
+            df = pd.read_excel(file)
+        elif file.name.endswith('.csv'):
+            df = pd.read_csv(file)
         dfs.append(df)
 
     # Find common columns among the uploaded files
@@ -21,7 +25,7 @@ if uploaded_files:
     for df in dfs[1:]:
         common_columns.intersection_update(df.columns)
 
-    # If common columns exist, merge on them, otherwise merge without a key
+    # If common columns exist, merge on them, otherwise concatenate the files
     if common_columns:
         common_column = list(common_columns)[0]  # Choose one common column for merging
         st.write(f"Merging on common column: {common_column}")
